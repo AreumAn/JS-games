@@ -16,23 +16,14 @@ function randomNumber() {
 randomNumber();
 
 // Show result
-let result = document.createElement("h1");
-body.append(result);
+let result = document.getElementById("result");
 
-let form = document.createElement("form");
-document.body.append(form);
+let form = document.getElementById("gameForm");
 
 // Input answer
-var inputbox = document.createElement("input");
-form.append(inputbox);
-inputbox.type = "text";
-inputbox.maxLength = 4;
-// Check if user inputs number
-inputbox.pattern = "^[0-9]*$";
+var inputbox = document.getElementById("answerInput");
 
-let btn = document.createElement("button");
-btn.textContent = "ENTER";
-form.append(btn);
+let btn = document.getElementsByTagName("button");
 
 var opportunities = 0;
 form.addEventListener("submit", function (event) {
