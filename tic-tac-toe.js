@@ -35,9 +35,12 @@ function checkWinner(clickedID) {
       const b = getTextContent(winningArr[i][1]);
       const c = getTextContent(winningArr[i][2]);
 
-      return turn === a && turn === b && turn === c;
+      if (turn === a && turn === b && turn === c) {
+        return true;
+      }
     }
   }
+  return false;
 }
 
 // When player clicks grid.
@@ -60,11 +63,11 @@ const clickEvent = function (event) {
     let winnerText = document.createElement("h2");
     winnerText.style.color = "red";
     winnerText.textContent =
-      turn + " WIN!! This page will be reload in 10 sec. ";
+      turn + " WIN!! This page will be reload in 5 sec. ";
     title.after(winnerText);
     setTimeout(function () {
       location.reload();
-    }, 10000);
+    }, 5000);
   } else {
     // Change turn to other player
     changeTurn();
