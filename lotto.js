@@ -16,12 +16,10 @@ for (let i = 0; i < 7; i++) {
 }
 
 let result = document.querySelector("#result");
+let titles = document.querySelectorAll(".titles");
 
-function drawBall(num, result) {
-  let ball = document.createElement("div");
-  console.log(num);
-  ball.textContent = num;
-  ball.className = "ball";
+// Get color depends on num
+function getColor(num) {
   let backgroundColor;
   if (num <= 10) {
     backgroundColor = "red";
@@ -34,20 +32,33 @@ function drawBall(num, result) {
   } else {
     backgroundColor = "blue";
   }
-  ball.style.background = backgroundColor;
+  return backgroundColor;
+}
+
+// Draw Ball with number
+function drawBall(num, result) {
+  let ball = document.createElement("div");
+  ball.textContent = num;
+  ball.className = "ball";
+  ball.style.background = getColor(num);
   result.appendChild(ball);
 }
 
+// show number ball every 1 sec
 for (let i = 0; i < results.length - 1; i++) {
   (function draw(j) {
     setTimeout(function () {
-      console.log(results[j]);
-      drawBall(results[j], result);
+      if (i === 0) {
+        titles[0].style.display = "block";
+      }
+      drawBall(results[i], result);
     }, (j + 1) * 1000);
   })(i);
 }
 
+// Draw bonus ball
 setTimeout(function drawBonus() {
+  titles[1].style.display = "block";
   var bonusDiv = document.querySelector(".bonus");
   drawBall(results[results.length - 1], bonusDiv);
 }, 7000);

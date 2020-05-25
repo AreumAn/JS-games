@@ -4,23 +4,29 @@
     <meta charset="utf-8" />
     <title>Lotto</title>
     <style>
+      .titles {
+        display: none;
+        font-size: 30px;
+        padding: 10px;
+      }
       .ball {
         display: inline-block;
-        border: 1px solid black;
-        border-radius: 20px;
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
+        border: 2px solid black;
+        border-radius: 40px;
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
         font-size: 20px;
+        font-weight: bolder;
         text-align: center;
         margin-right: 20px;
       }
     </style>
   </head>
   <body>
-    <div>Result</div>
+    <div class="titles">Result</div>
     <div id="result"></div>
-    <div>Bonus</div>
+    <div class="titles">Bonus</div>
     <div class="bonus"></div>
     <script src="lotto.js"></script>
   </body>
