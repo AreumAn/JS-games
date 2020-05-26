@@ -9,6 +9,7 @@ Have fun with simple games with JS for fun
 - [Bulls and Cows](#bulls-and-cows)
 - [Tic Tac Toe](#tic-tac-toe)
 - [Lotto](#lotto)
+- [Rock Paper Scissors](#rock-paper-scissors)
 
 ---
 
@@ -27,3 +28,5 @@ To check more information[wikipedia Tic Tac Toe](https://en.wikipedia.org/wiki/T
 ## Lotto
 
 Get random lotto number. It shows 6 number and 1 bonus number. A number ball appears every 1 second.
+
+## Rock Paper Scissors
