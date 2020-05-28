@@ -47,7 +47,7 @@ function drawBall(num, result) {
 // show number ball every 1 sec
 for (let i = 0; i < results.length - 1; i++) {
   (function draw(j) {
-    setTimeout(function () {
+    setTimeout(() => {
       if (i === 0) {
         titles[0].style.display = "block";
       }

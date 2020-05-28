@@ -36,7 +36,7 @@ setComputerPlayerInterval();
 
 function getComputerScore(computerPlayer) {
   // To prevent too much hard coding, get array by Object.entries() and find key by value
-  return Object.entries(imgPositionObj).find(function (p) {
+  return Object.entries(imgPositionObj).find((p) => {
     return p[1] === computerPlayer;
   })[0];
 }
@@ -56,7 +56,7 @@ function checkWinner(player, computerPlayer) {
   }
 }
 
-document.querySelectorAll(".btn").forEach(function (btn) {
+document.querySelectorAll(".btn").forEach((btn) => {
   btn.addEventListener("click", function () {
     clearInterval(interval);
     checkWinner(btn.id, imgPosition);

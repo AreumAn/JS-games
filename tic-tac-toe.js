@@ -44,7 +44,7 @@ function checkWinner(clickedID) {
 }
 
 // When player clicks grid.
-const clickEvent = function (event) {
+const clickEvent = (event) => {
   const clickedBox = event.target;
 
   if (clickedBox.textContent !== "") {
@@ -65,7 +65,7 @@ const clickEvent = function (event) {
     winnerText.textContent =
       turn + " WIN!! This page will be reload in 5 sec. ";
     title.after(winnerText);
-    setTimeout(function () {
+    setTimeout(() => {
       location.reload();
     }, 5000);
   } else {

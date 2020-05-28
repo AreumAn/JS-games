@@ -26,7 +26,7 @@ var inputbox = document.getElementById("answerInput");
 let btn = document.getElementsByTagName("button");
 
 var opportunities = 0;
-form.addEventListener("submit", function (event) {
+form.addEventListener("submit", (event) => {
   event.preventDefault();
   // input answer
   var answer = inputbox.value;
