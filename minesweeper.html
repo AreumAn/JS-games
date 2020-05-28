@@ -13,7 +13,7 @@
         line-height: 20px;
         width: 20px;
         height: 20px;
-        /* background: #222; */
+        background: #222;
       }
       td.opened {
         background: white;
@@ -23,6 +23,32 @@
       }
       td.question {
         background: orange;
+      }
+      td.hoverAnimation {
+        -o-animation: fadeIt 0.3s ease-in-out;
+        animation: fadeIt 0.3s ease-in-out;
+      }
+      @-o-keyframes fadeIt {
+        0% {
+          background-color: #222;
+        }
+        50% {
+          background-color: #ad301b;
+        }
+        100% {
+          background-color: #222;
+        }
+      }
+      @keyframes fadeIt {
+        0% {
+          background-color: #222;
+        }
+        50% {
+          background-color: #ad301b;
+        }
+        100% {
+          background-color: #222;
+        }
       }
     </style>
   </head>
@@ -34,6 +60,7 @@
     <input id="ver" type="number" placeholder="column" value="10" />
     <input id="bomb" type="number" placeholder="bombs" value="20" />
     <button id="exec">STRAT</button>
+    <div id="result"></div>
     <table id="table">
       <thead>
         <tr>
@@ -42,7 +69,6 @@
       </thead>
       <tbody></tbody>
     </table>
-    <div id="result"></div>
     <script src="minesweeper.js"></script>
   </body>
 </html>
