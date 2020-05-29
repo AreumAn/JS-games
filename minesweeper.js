@@ -93,9 +93,11 @@ function getBombsNum(row, col) {
 // Open girds around when it doesn't have bombs
 function openAroundGrid(row, col) {
   getAroundGrid(row, col)
-    .filter((v) => !!v) // filter undefined
-    .forEach(function (td) {
-      td.click();
+    .filter((v) => !!v && !v.classList.contains("opened")) // filter undefined
+    .forEach((td) => {
+      setTimeout(() => {
+        td.click();
+      }, 10);
     });
 }
 
@@ -145,15 +147,12 @@ document.querySelector("#exec").addEventListener("click", (e) => {
         // Click right, left button at the same time
         if (pressKeys.right && pressKeys.left) {
           pressKeys.right = false;
-          console.log(i, j, dataSet[i][j]);
           if (dataSet[i][j] === 1) {
             // check if bomb has X but it has not flag or question, change color
             let array = getAroundGrid(i, j);
             let values = getAroundDataValue(i, j);
             let matched = [];
             let temp = [];
-            console.log("array: ", array);
-            console.log("values: ", values);
 
             for (let i = 0; i < array.length; i++) {
               if (
@@ -174,7 +173,6 @@ document.querySelector("#exec").addEventListener("click", (e) => {
             } else {
               temp.forEach((td) => {
                 td.classList.add("hoverAnimation");
-                console.log(td.classList);
               });
             }
           }
@@ -205,12 +203,9 @@ document.querySelector("#exec").addEventListener("click", (e) => {
       });
       // left click to get number of bombs
       td.addEventListener("click", (e) => {
-        console.log("hello");
         if (isStopGame) {
           return;
         }
-        // When the user clicks right and left button at the same time
-        console.log("click: ", pressKeys.right, pressKeys.left);
 
         if (dataSet[i][j] === "X") {
           // If user clicks bomb, user will lose.
