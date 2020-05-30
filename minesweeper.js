@@ -1,5 +1,7 @@
 let tbody = document.querySelector("#table tbody");
 let resultDiv = document.querySelector("#result");
+let timer = document.querySelector("#timer");
+
 /**
  * dataSet
  *
@@ -10,6 +12,11 @@ let resultDiv = document.querySelector("#result");
 let dataSet = [];
 let isStopGame = false;
 let openedGrid = 0;
+const messages = {
+  lose: "You Lose!",
+  win: "You Win!",
+  timeout: "Timeout! You Lose!",
+};
 
 // Get bombs random indx
 function getBombs(row, column, bomb) {
@@ -116,6 +123,37 @@ function drawFlag(target) {
   }
 }
 
+// Decrease time
+let interval;
+function decreaseTime(time) {
+  interval = setInterval(() => {
+    if (time < 0 || isStopGame) {
+      showResult(messages.timeout);
+      clearInterval(interval);
+      return;
+    }
+    timer.textContent = time;
+    time -= 1;
+  }, 1000);
+}
+
+// show bombs and result msg when game is done
+function showResult(text) {
+  isStopGame = true;
+  resultDiv.textContent = text;
+  clearInterval(interval);
+  console.log(dataSet.length);
+  for (let i = 0; i < dataSet.length; i++) {
+    for (let j = 0; j < dataSet[i].length; j++) {
+      if (dataSet[i][j] === "X") {
+        let tr = tbody.children[i].children[j];
+        tr.textContent = "X";
+        tr.classList.add("bombs");
+      }
+    }
+  }
+}
+
 document.querySelector("#exec").addEventListener("click", (e) => {
   resetGame();
 
@@ -167,13 +205,17 @@ document.querySelector("#exec").addEventListener("click", (e) => {
             }
 
             if (matched.length === getBombsNum(i, j)) {
-              temp.forEach((td) => {
-                td.click();
-              });
+              temp
+                .filter((v) => !!v)
+                .forEach((td) => {
+                  td.click();
+                });
             } else {
-              temp.forEach((td) => {
-                td.classList.add("hoverAnimation");
-              });
+              temp
+                .filter((v) => !!v)
+                .forEach((td) => {
+                  td.classList.add("hoverAnimation");
+                });
             }
           }
         }
@@ -209,8 +251,7 @@ document.querySelector("#exec").addEventListener("click", (e) => {
 
         if (dataSet[i][j] === "X") {
           // If user clicks bomb, user will lose.
-          isStopGame = true;
-          resultDiv.textContent = "You Lose!";
+          showResult(messages.lose);
         } else if (dataSet[i][j] !== 1) {
           // Show bombs number around clicked grid
           let bombsAroundTarget = getBombsNum(i, j);
@@ -227,8 +268,7 @@ document.querySelector("#exec").addEventListener("click", (e) => {
         }
 
         if (openedGrid >= row * column - bomb) {
-          isStopGame = true;
-          resultDiv.textContent = "You win!";
+          showResult(messages.win);
         }
       });
       tr.appendChild(td);
@@ -240,7 +280,10 @@ document.querySelector("#exec").addEventListener("click", (e) => {
   for (let i = 0; i < bombsIdx.length; i++) {
     let rowPosition = Math.floor(bombsIdx[i] / column);
     let colPosition = bombsIdx[i] % column;
-    tbody.children[rowPosition].children[colPosition].textContent = "X";
     dataSet[rowPosition][colPosition] = "X";
   }
+
+  // Set timer
+  let time = (timer.textContent = 5);
+  decreaseTime(time, bombsIdx);
 });
