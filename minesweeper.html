@@ -4,8 +4,12 @@
     <meta charset="utf-8" />
     <title>Minesweeper</title>
     <style>
+        .intro {
+            margin: 5px 0;
+        }
       table {
         border-collapse: collapse;
+        margin: 5px 0;
       }
       td {
         border: 1px solid #bbb;
@@ -29,6 +33,13 @@
       }
       thead tr td {
         background: none;
+      }
+      .inputs {
+        margin: 5px 0;
+      }
+      .inputs label {
+        width: 80px;
+        background: green;
       }
       td.hoverAnimation {
         -o-animation: fadeIt 0.3s ease-in-out;
@@ -61,6 +72,10 @@
   <body>
     <div style="color: orange; padding: 10px;">
       Go to the main page <a href="index.html">Click!!</a>
+    </div>
+    <div class="intro">
+        Add how many row, column and bombs you want.</br>
+        And then, Click start button!
     </div>
     <input id="hor" type="number" placeholder="row" value="10" />
     <input id="ver" type="number" placeholder="column" value="10" />

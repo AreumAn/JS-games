@@ -2,20 +2,33 @@ let tbody = document.querySelector("#table tbody");
 let resultDiv = document.querySelector("#result");
 let timer = document.querySelector("#timer");
 
-/**
- * dataSet
- *
- * 0: default - not opened, no bomb
- * 1: opned
- * X: bomb
- */
-let dataSet = [];
 let isStopGame = false;
 let openedGrid = 0;
+let dataSet = [];
+
+// To save dataSet
+const dataCode = {
+  default: 0,
+  opened: 1,
+  bomb: "X",
+  flag: "!",
+  question: "?",
+};
+
+// To show msg to user
 const messages = {
   lose: "You Lose!",
   win: "You Win!",
   timeout: "Timeout! You Lose!",
+};
+
+// To add/remove class for style
+const classCode = {
+  opened: "opened",
+  flag: "flag",
+  question: "question",
+  bombs: "bombs",
+  hoverAnimation: "hoverAnimation",
 };
 
 // Get bombs random indx
@@ -36,14 +49,6 @@ function getBombs(row, column, bomb) {
   }
 
   return shuffle;
-}
-
-function resetGame() {
-  tbody.innerHTML = "";
-  resultDiv.textContent = "";
-  dataSet = [];
-  isStopGame = false;
-  openedGrid = 0;
 }
 
 // Get dataSet values around dataSet[row][col]
@@ -93,14 +98,14 @@ function getAroundGrid(row, col) {
 // Get how many bombs are around
 function getBombsNum(row, col) {
   return getAroundDataValue(row, col).filter((v) => {
-    return v === "X";
+    return v === dataCode.bomb;
   }).length;
 }
 
 // Open girds around when it doesn't have bombs
 function openAroundGrid(row, col) {
   getAroundGrid(row, col)
-    .filter((v) => !!v && !v.classList.contains("opened")) // filter undefined
+    .filter((v) => !!v && !v.classList.contains(classCode.opened)) // filter undefined
     .forEach((td) => {
       setTimeout(() => {
         td.click();
@@ -110,16 +115,16 @@ function openAroundGrid(row, col) {
 
 // Draw flag or question on the grid
 function drawFlag(target) {
-  if (target.textContent === "!") {
-    target.textContent = "?";
-    target.classList.remove("flag");
-    target.classList.add("question");
-  } else if (target.textContent === "?") {
-    target.classList.remove("question");
+  if (target.textContent === dataCode.flag) {
+    target.textContent = dataCode.question;
+    target.classList.remove(classCode.flag);
+    target.classList.add(classCode.question);
+  } else if (target.textContent === dataCode.question) {
+    target.classList.remove(classCode.question);
     target.textContent = "";
   } else {
-    target.classList.add("flag");
-    target.textContent = "!";
+    target.classList.add(classCode.flag);
+    target.textContent = dataCode.flag;
   }
 }
 
@@ -128,8 +133,7 @@ let interval;
 function decreaseTime(time) {
   interval = setInterval(() => {
     if (time < 0 || isStopGame) {
-      showResult(messages.timeout);
-      clearInterval(interval);
+      stopGame(messages.timeout);
       return;
     }
     timer.textContent = time;
@@ -137,21 +141,33 @@ function decreaseTime(time) {
   }, 1000);
 }
 
-// show bombs and result msg when game is done
-function showResult(text) {
+// Stop game, show bombs and result msg when game is done
+function stopGame(text) {
   isStopGame = true;
-  resultDiv.textContent = text;
+  // Stop timer
   clearInterval(interval);
-  console.log(dataSet.length);
+  // Show result
+  resultDiv.textContent = text;
+  // Show bombs
   for (let i = 0; i < dataSet.length; i++) {
     for (let j = 0; j < dataSet[i].length; j++) {
-      if (dataSet[i][j] === "X") {
+      if (dataSet[i][j] === dataCode.bomb) {
         let tr = tbody.children[i].children[j];
-        tr.textContent = "X";
-        tr.classList.add("bombs");
+        tr.textContent = dataCode.bomb;
+        tr.classList.add(classCode.bombs);
       }
     }
   }
+}
+
+// Restart game
+function resetGame() {
+  tbody.innerHTML = "";
+  resultDiv.textContent = "";
+  dataSet = [];
+  isStopGame = false;
+  openedGrid = 0;
+  clearInterval(interval);
 }
 
 document.querySelector("#exec").addEventListener("click", (e) => {
@@ -168,11 +184,11 @@ document.querySelector("#exec").addEventListener("click", (e) => {
 
   // Draw table
   for (let i = 0; i < row; i++) {
-    let arr = [];
+    let defaultDataSet = [];
     let tr = document.createElement("tr");
-    dataSet.push(arr);
+    dataSet.push(defaultDataSet);
     for (let j = 0; j < column; j++) {
-      arr.push(0);
+      defaultDataSet.push(dataCode.default);
       let td = document.createElement("td");
 
       td.addEventListener("mousedown", (e) => {
@@ -182,59 +198,67 @@ document.querySelector("#exec").addEventListener("click", (e) => {
           pressKeys.right = true;
         }
 
-        // Click right, left button at the same time
+        // Click both right, left buttons at the same time
         if (pressKeys.right && pressKeys.left) {
           pressKeys.right = false;
-          if (dataSet[i][j] === 1) {
-            // check if bomb has X but it has not flag or question, change color
-            let array = getAroundGrid(i, j);
-            let values = getAroundDataValue(i, j);
-            let matched = [];
-            let temp = [];
 
-            for (let i = 0; i < array.length; i++) {
+          if (dataSet[i][j] === dataCode.opened) {
+            // check if bomb exists but it has not flag or question, blink around grids
+            let aroundGrids = getAroundGrid(i, j);
+            let aroundGridsValues = getAroundDataValue(i, j);
+
+            let foundedBombs = [];
+            let unopnedGrids = [];
+
+            for (let i = 0; i < aroundGrids.length; i++) {
               if (
-                values[i] === "X" &&
-                !!array[i].textContent &&
-                array[i].textContent !== "X"
+                aroundGridsValues[i] === dataCode.bomb &&
+                !!aroundGrids[i].textContent
               ) {
-                matched.push(array[i]);
-              } else if (values[i] !== 1) {
-                temp.push(array[i]);
+                // The user already found bombs with flag or question
+                foundedBombs.push(aroundGrids[i]);
+              } else if (aroundGridsValues[i] !== dataCode.opened) {
+                // grid is not opened
+                unopnedGrids.push(aroundGrids[i]);
               }
             }
 
-            if (matched.length === getBombsNum(i, j)) {
-              temp
+            if (foundedBombs.length === getBombsNum(i, j)) {
+              // if the user already found bombs around grids, open other grids
+              unopnedGrids
                 .filter((v) => !!v)
                 .forEach((td) => {
                   td.click();
                 });
             } else {
-              temp
+              // if the user don't find bombs around, blink grids
+              unopnedGrids
                 .filter((v) => !!v)
                 .forEach((td) => {
-                  td.classList.add("hoverAnimation");
+                  td.classList.add(classCode.hoverAnimation);
                 });
             }
           }
         }
       });
+
       td.addEventListener("mouseup", (e) => {
         if (e.which == 1) {
           pressKeys.left = false;
         } else if (e.which === 3) {
           pressKeys.right = false;
         }
+        // Remove blink style
         let hoveredEls = document.querySelectorAll(".hoverAnimation");
         for (let i = 0; i < hoveredEls.length; i++) {
-          hoveredEls[i].classList.remove("hoverAnimation");
+          hoveredEls[i].classList.remove(classCode.hoverAnimation);
         }
       });
+
       // Right click event for adding flag
       td.addEventListener("contextmenu", (e) => {
         e.preventDefault();
-        if (isStopGame || dataSet[i][j] === 1) {
+        if (isStopGame || dataSet[i][j] === dataCode.opened) {
           // return if game is done or this grid is already opened
           return;
         }
@@ -243,24 +267,25 @@ document.querySelector("#exec").addEventListener("click", (e) => {
         }
         pressKeys.right = false;
       });
+
       // left click to get number of bombs
       td.addEventListener("click", (e) => {
         if (isStopGame) {
           return;
         }
 
-        if (dataSet[i][j] === "X") {
+        if (dataSet[i][j] === dataCode.bomb) {
           // If user clicks bomb, user will lose.
-          showResult(messages.lose);
-        } else if (dataSet[i][j] !== 1) {
+          stopGame(messages.lose);
+        } else if (dataSet[i][j] !== dataCode.opened) {
           // Show bombs number around clicked grid
           let bombsAroundTarget = getBombsNum(i, j);
-          dataSet[i][j] = 1;
+          dataSet[i][j] = dataCode.opened;
           openedGrid += 1;
           // If bombsAroundTarget is falsy - false, '', 0, null, undefined, NaN -
           // Use "" instead
           e.target.textContent = bombsAroundTarget || "";
-          e.target.classList.add("opened");
+          e.target.classList.add(classCode.opened);
           // If target doesn't have bomb around, open around grid
           if (bombsAroundTarget === 0) {
             openAroundGrid(i, j);
@@ -268,7 +293,7 @@ document.querySelector("#exec").addEventListener("click", (e) => {
         }
 
         if (openedGrid >= row * column - bomb) {
-          showResult(messages.win);
+          stopGame(messages.win);
         }
       });
       tr.appendChild(td);
@@ -280,10 +305,10 @@ document.querySelector("#exec").addEventListener("click", (e) => {
   for (let i = 0; i < bombsIdx.length; i++) {
     let rowPosition = Math.floor(bombsIdx[i] / column);
     let colPosition = bombsIdx[i] % column;
-    dataSet[rowPosition][colPosition] = "X";
+    dataSet[rowPosition][colPosition] = dataCode.bomb;
   }
 
   // Set timer
-  let time = (timer.textContent = 5);
+  let time = (timer.textContent = 100);
   decreaseTime(time, bombsIdx);
 });
