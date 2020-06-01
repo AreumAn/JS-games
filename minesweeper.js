@@ -51,7 +51,7 @@ function getBombs(row, column, bomb) {
   return shuffle;
 }
 
-// Get dataSet values around dataSet[row][col]
+// Get dataSet values surrounding dataSet[row][col]
 function getAroundDataValue(row, col) {
   let aroundArr = [dataSet[row][col - 1], dataSet[row][col + 1]];
   if (dataSet[row - 1]) {
@@ -71,7 +71,7 @@ function getAroundDataValue(row, col) {
   return aroundArr;
 }
 
-//Get td elements around tbody.children[row].children[col] which the user clicked
+//Get td elements surrounding tbody.children[row].children[col] which the user clicked
 function getAroundGrid(row, col) {
   let aroundTDArr = [
     tbody.children[row].children[col - 1],
@@ -95,14 +95,14 @@ function getAroundGrid(row, col) {
   return aroundTDArr;
 }
 
-// Get how many bombs are around
+// Get surrounding bombs
 function getBombsNum(row, col) {
   return getAroundDataValue(row, col).filter((v) => {
     return v === dataCode.bomb;
   }).length;
 }
 
-// Open girds around when it doesn't have bombs
+// Open surrounding girds when it doesn't have bombs
 function openAroundGrid(row, col) {
   getAroundGrid(row, col)
     .filter((v) => !!v && !v.classList.contains(classCode.opened)) // filter undefined
@@ -203,7 +203,7 @@ document.querySelector("#exec").addEventListener("click", (e) => {
           pressKeys.right = false;
 
           if (dataSet[i][j] === dataCode.opened) {
-            // check if bomb exists but it has not flag or question, blink around grids
+            // check if bomb exists but it has not flag or question, blink surrounding grids
             let aroundGrids = getAroundGrid(i, j);
             let aroundGridsValues = getAroundDataValue(i, j);
 
@@ -224,14 +224,14 @@ document.querySelector("#exec").addEventListener("click", (e) => {
             }
 
             if (foundedBombs.length === getBombsNum(i, j)) {
-              // if the user already found bombs around grids, open other grids
+              // if the user already found surrounding bombs grids, open other grids
               unopnedGrids
                 .filter((v) => !!v)
                 .forEach((td) => {
                   td.click();
                 });
             } else {
-              // if the user don't find bombs around, blink grids
+              // if the user don't find surrounding bombs, blink grids
               unopnedGrids
                 .filter((v) => !!v)
                 .forEach((td) => {
@@ -286,7 +286,7 @@ document.querySelector("#exec").addEventListener("click", (e) => {
           // Use "" instead
           e.target.textContent = bombsAroundTarget || "";
           e.target.classList.add(classCode.opened);
-          // If target doesn't have bomb around, open around grid
+          // If target doesn't have surrounding bombs, open surrounding grids
           if (bombsAroundTarget === 0) {
             openAroundGrid(i, j);
           }
