@@ -12,6 +12,7 @@ Have fun with simple games with JS for fun
 - [Rock Paper Scissors](#rock-paper-scissors)
 - [Minesweeper](#minesweeper)
 - [Reaction Time Test](#reaction-time-test)
+- [Card Matching](#card-matching)
 
 ---
 
@@ -40,3 +41,7 @@ Minesweeper is a single-player puzzle video game. The objective of the game is t
 ## Reaction Time Test
 
 When the red box turns green, click as quickly as you can. [More info](https://humanbenchmark.com/tests/reactiontime)
+
+## Card Matching
+
+Find same color card
