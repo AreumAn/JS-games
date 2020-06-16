@@ -1,4 +1,5 @@
 const table = document.getElementById('table');
+const scoreSpan = document.getElementById('score');
 let data = [];
 const array = [1, 2, 3, 4];
 
@@ -86,6 +87,7 @@ draw();
 
 const moveByDirection = (dir) => {
   let newData = [[], [], [], []];
+  let currentScore = parseInt(scoreSpan.textContent, 10);
   switch (dir) {
     case 'up':
       data.forEach((colValue, i) => {
@@ -96,6 +98,8 @@ const moveByDirection = (dir) => {
               newData[j][newData[j].length - 1] === rowValue
             ) {
               newData[j][newData[j].length - 1] *= 2;
+              scoreSpan.textContent =
+                currentScore + newData[j][newData[j].length - 1];
             } else {
               newData[j].push(rowValue);
             }
@@ -114,6 +118,7 @@ const moveByDirection = (dir) => {
           if (rowValue) {
             if (newData[j][0] && newData[j][0] === rowValue) {
               newData[j][0] *= 2;
+              scoreSpan.textContent = currentScore + newData[j][0];
             } else {
               newData[j].unshift(rowValue);
             }
@@ -132,6 +137,7 @@ const moveByDirection = (dir) => {
           if (rowValue) {
             if (newData[i][0] && newData[i][0] === rowValue) {
               newData[i][0] *= 2;
+              scoreSpan.textContent = currentScore + newData[i][0];
             } else {
               newData[i].unshift(rowValue);
             }
@@ -153,6 +159,8 @@ const moveByDirection = (dir) => {
               newData[i][newData[i].length - 1] === rowValue
             ) {
               newData[i][newData[i].length - 1] *= 2;
+              scoreSpan.textContent =
+                currentScore + newData[i][newData[i].length - 1];
             } else {
               newData[i].push(rowValue);
             }
